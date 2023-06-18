@@ -135,53 +135,56 @@ def translator_en_ch(text):
 
 
 if __name__ == '__main__':
-    args = parse_arge()
-    openai.api_key = args.api_key
+    try:
+        args = parse_arge()
+        openai.api_key = args.api_key
 
-    ques = args.question
-    print("Question: ",ques)
+        ques = args.question
+        print("Question: ",ques)
 
-    lang = detect_language(ques)
-    # print(ques)
+        lang = detect_language(ques)
+        # print(ques)
 
-    keyword_lst = question_to_keyword(ques)
-    # print(keyword_lst)
-    news_content = get_news_content(keyword_lst)
-    # print(len(news_content[0]))
+        keyword_lst = question_to_keyword(ques)
+        # print(keyword_lst)
+        news_content = get_news_content(keyword_lst)
+        # print(len(news_content[0]))
 
-    prompt_file = 'myprompt.txt'
-    with open(prompt_file, 'r') as f:
-        myprompt = f.read()
+        prompt_file = 'myprompt.txt'
+        with open(prompt_file, 'r') as f:
+            myprompt = f.read()
 
-    print("Answer: ")
+        print("Answer: ")
 
-    if news_content:
-        rerank_content = similar_content_rank(ques,news_content[0])
-        # print(rerank_content[0])
+        if news_content:
+            rerank_content = similar_content_rank(ques,news_content[0])
+            # print(rerank_content[0])
 
-        if lang == 'en':
-            print(get_answer(rerank_content[0][0],myprompt,ques))
-            print("Source: ",news_content[0][1])
-        elif lang == 'zh-cn':
-            eng_text = get_answer(rerank_content[0][0],myprompt,ques)
-            # print(rerank_content[0][0])
-            # print("eng text:",eng_text)
-            answer = translator_en_ch(eng_text)
-            if answer:
-                print(answer)
-            else:
+            if lang == 'en':
                 print(get_answer(rerank_content[0][0],myprompt,ques))
-            print("来源：", news_content[0][1])
+                print("Source: ",news_content[0][1])
+            elif lang == 'zh-cn':
+                eng_text = get_answer(rerank_content[0][0],myprompt,ques)
+                # print(rerank_content[0][0])
+                # print("eng text:",eng_text)
+                answer = translator_en_ch(eng_text)
+                if answer:
+                    print(answer)
+                else:
+                    print(get_answer(rerank_content[0][0],myprompt,ques))
+                print("来源：", news_content[0][1])
 
 
-    else:
-        no_news = "No news found, Please search relevant news in your training data and treat them as the news"
-        if lang == 'en':
-            print(get_answer(no_news,myprompt,ques))
+        else:
+            no_news = "No news found, Please search relevant news in your training data and treat them as the news"
+            if lang == 'en':
+                print(get_answer(no_news,myprompt,ques))
 
-        elif lang =='zh-cn':
-            answer = translator_en_ch(get_answer(no_news,myprompt,ques))
-            print(answer)
+            elif lang =='zh-cn':
+                answer = translator_en_ch(get_answer(no_news,myprompt,ques))
+                print(answer)
+    except Exception as e:
+        print("There is an error: ",e)
 
 
 

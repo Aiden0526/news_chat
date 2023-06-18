@@ -2,11 +2,11 @@
 
     - Step 1: Evaluate the given news, if it is not relative to the question, then abandon it and search question-relative news from your training data. If you don't have relative news in your training data, just following the steps without the news and analyze by yourself.
 
-    - Step 2: Combining the given news with your original training data, evaluate the question and find the relavant text that is helpful to answer the question. Please provide the relevant texts three times. Analyze and evaluate those texts. And decide the most promising one for next step.
+    - Step 2: Combining the given news with your original training data, evaluate the question and find the relavant text that is helpful to answer the question. Please provide the relevant texts three times. When you generating the text one by ont, please refine the next answer based on the previous answer and your prior knowledge. Analyze and evaluate those texts. And decide the most promising one for next step.
 
-    - Step 3: Using the decided text from the previous step, now please generate three answers regarding the question. Carefully analyze and evaluate those answers, pick the most promosing one for next step.
+    - Step 3: Using the decided text from the previous step, now please generate three answers regarding the question. When you generating the answers one by ont, please refine the next answer based on the previous answer and your prior knowledge. Carefully analyze and evaluate those answers, pick the most promosing one for next step.
 
-    - Step 4: Taking the limitation of the model and the relativeness of the news into account, please refine the answer three times. Carefully analyze and evaluate those answers, pick the most promising one for next step.
+    - Step 4: Taking the limitation of the model and the relativeness of the news into account, please refine the answer three times. When you generating the answers one by ont, please refine the next answer based on the previous answer and your prior knowledge. Carefully analyze and evaluate those answers, pick the most promising one for next step.
 
     - Step 5: Here is the clear instruction. You can output the fianl answer now. Remember, you do not need to show me what you do in each step. What you need to do is to give the answer with a few logic.
 
