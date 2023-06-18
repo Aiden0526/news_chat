@@ -11,7 +11,8 @@ import argparse
 import json
 
 from langdetect import detect
-from google.cloud import translate_v2 as translate
+# from google.cloud import translate_v2 as translate
+from translate import Translator
 
 
 @retry(stop_max_attempt_number=3,wait_fixed=2000)
@@ -82,7 +83,7 @@ def get_answer(most_relative_news,myprompt,ques):
         output_file = os.path.join(os.getcwd(), "full_analysis.json")
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-        steps = response['choices'][0]['message']['content'].split('\n\nStep')
+        steps = response['choices'][0]['message']['content'].split('Step')
 
         analysis = {}
 
@@ -125,12 +126,12 @@ def detect_language(text):
     return lang
 
 def translator_en_ch(text):
-    translator = translate.Client()
+    translator = Translator(to_lang="zh")
     # print(text)
-    translation = translator.translate(text,target_language='zh-CN')
+    translation = translator.translate(text)
     # print(translation)
 
-    return translation['translatedText']
+    return translation
 
 
 if __name__ == '__main__':
@@ -138,6 +139,7 @@ if __name__ == '__main__':
     openai.api_key = args.api_key
 
     ques = args.question
+    print("Question: ",ques)
 
     lang = detect_language(ques)
     # print(ques)
@@ -150,6 +152,8 @@ if __name__ == '__main__':
     prompt_file = 'myprompt.txt'
     with open(prompt_file, 'r') as f:
         myprompt = f.read()
+
+    print("Answer: ")
 
     if news_content:
         rerank_content = similar_content_rank(ques,news_content[0])

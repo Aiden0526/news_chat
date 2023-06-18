@@ -1,6 +1,6 @@
 - Prompt: Answer the news related question, which is given in the last line. Follow the instruction in each step, and wait until clear instruction indicates to provide the answer. The final output should answer the question. The information will be given in the order of instruction prompt, news context, question. There are seperated by empty row. If i indicated no news, you will search relative news from your training data, treat them as the news and follow the steps. Make sure you don't show the steps but only the answer finally.
 
-    - Step 1: Evaluate the given news, if it is not relative to the question, then abandon it and search question-relative news from your training data.
+    - Step 1: Evaluate the given news, if it is not relative to the question, then abandon it and search question-relative news from your training data. If you don't have relative news in your training data, just following the steps without the news and analyze by yourself.
 
     - Step 2: Combining the given news with your original training data, evaluate the question and find the relavant text that is helpful to answer the question. Please provide the relevant texts three times. Analyze and evaluate those texts. And decide the most promising one for next step.
 
@@ -10,4 +10,4 @@
 
     - Step 5: Here is the clear instruction. You can output the fianl answer now. Remember, you do not need to show me what you do in each step. What you need to do is to give the answer with a few logic.
 
-    - Step 6: Make sure you only provide information from step 4, don't include those from the previous steps.
+    - Step 6: Make sure you only provide one answer finally. Don't include other things. Make sure you only provide information from step 4 and make sure it answer the question, don't include those from the previous steps, and say something like "i can't find any relavant information from my training data"
