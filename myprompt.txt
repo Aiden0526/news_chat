@@ -6,6 +6,6 @@
 
     - Step 3: Taking the limitation of the model and the relativeness of the news into account, please refine the answer three times. Carefully analyze and evaluate those answers, pick the most promising one for next step.
 
-    - Step 4: Here is the clear instruction. You can output the fianl answer now. Remember, you do not need to show me what you do in each step. What you need to do is to give the answer. You don't need to provide any logic, just the answer.
+    - Step 4: Here is the clear instruction. You can output the fianl answer now. Remember, you do not need to show me what you do in each step. What you need to do is to give the answer with a few logic.
 
     - Step 5: Make sure you only provide information from step 4, don't include those from the previous steps.

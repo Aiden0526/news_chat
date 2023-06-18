@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import openai
 from retrying import retry
 import argparse
+import json
 
 
 @retry(stop_max_attempt_number=3,wait_fixed=2000)
@@ -25,7 +26,8 @@ def get_news_content(keyword_lst):
     # print(response)
 
     articles = response['results']
-    contents = [article['content'] for article in articles]
+    contents = [(article['content'],article['source']) for article in articles]
+
 
     return contents
 
@@ -39,7 +41,7 @@ def question_to_keyword(ques):
 def similar_content_rank(ques,contents):
     model = SentenceTransformer('all-MiniLM-L6-v2')
     ques_embedding = model.encode([ques])
-    contents_embedding = model.encode(contents)
+    contents_embedding = model.encode(contents['content'])
 
     if len(ques_embedding.shape)==1:
         ques_embedding = ques_embedding.reshape(1,-1)
@@ -69,6 +71,21 @@ def get_answer(most_relative_news,myprompt,ques):
                 {"role":"user","content":combined_prompt}
             ]
         )
+
+        ## save the tree of thought process to full_analysis.json file
+        output_file = os.path.join(os.getcwd(), "full_analysis.json")
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+        steps = response['choices'][0]['message']['content'].split('\n\nStep')
+
+        analysis = {}
+
+        for i, step in enumerate(steps):
+            step = step.strip().lstrip(':')
+            analysis[f"Step {i+1}"] = step
+
+        with open(output_file, "w") as f:
+            json.dump(analysis, f, indent=4)
 
         return post_process(response['choices'][0]['message']['content'])
     except Exception as e:
@@ -118,6 +135,8 @@ if __name__ == '__main__':
     if news_content:
         rerank_content = similar_content_rank(ques,news_content)
         print(get_answer(rerank_content[0][0],myprompt,ques))
+        print("\n")
+        print(news_content['source'])
 
     else:
         no_news = "No news found, Please search relevant news in your training data and treat them as the news"
