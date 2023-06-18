@@ -35,6 +35,8 @@ To run the script, use the following commend:
 '''
 
 If permission got denied, type the following command and try running it again:
+
+
 '''
 chmod +x run.sh
 '''
