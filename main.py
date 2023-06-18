@@ -10,6 +10,9 @@ from retrying import retry
 import argparse
 import json
 
+from langdetect import detect
+from google.cloud import translate_v2 as translate
+
 
 @retry(stop_max_attempt_number=3,wait_fixed=2000)
 def get_news_content(keyword_lst):
@@ -25,8 +28,10 @@ def get_news_content(keyword_lst):
 
     # print(response)
 
+    # print(response)
+
     articles = response['results']
-    contents = [(article['content'],article['source']) for article in articles]
+    contents = [(article['content'],article['source_id']) for article in articles]
 
 
     return contents
@@ -41,7 +46,8 @@ def question_to_keyword(ques):
 def similar_content_rank(ques,contents):
     model = SentenceTransformer('all-MiniLM-L6-v2')
     ques_embedding = model.encode([ques])
-    contents_embedding = model.encode(contents['content'])
+    # print(contents)
+    contents_embedding = model.encode(contents[0])
 
     if len(ques_embedding.shape)==1:
         ques_embedding = ques_embedding.reshape(1,-1)
@@ -114,6 +120,18 @@ def parse_arge():
     args = args.parse_args()
     return args
 
+def detect_language(text):
+    lang = detect(text)
+    return lang
+
+def translator_en_ch(text):
+    translator = translate.Client()
+    # print(text)
+    translation = translator.translate(text,target_language='zh-CN')
+    # print(translation)
+
+    return translation['translatedText']
+
 
 if __name__ == '__main__':
     args = parse_arge()
@@ -121,24 +139,46 @@ if __name__ == '__main__':
 
     ques = args.question
 
+    lang = detect_language(ques)
     # print(ques)
 
     keyword_lst = question_to_keyword(ques)
     # print(keyword_lst)
     news_content = get_news_content(keyword_lst)
-    # print(news_content)
+    # print(len(news_content[0]))
 
     prompt_file = 'myprompt.txt'
     with open(prompt_file, 'r') as f:
         myprompt = f.read()
 
     if news_content:
-        rerank_content = similar_content_rank(ques,news_content)
-        print(get_answer(rerank_content[0][0],myprompt,ques))
-        print("\n")
-        print(news_content['source'])
+        rerank_content = similar_content_rank(ques,news_content[0])
+        # print(rerank_content[0])
+
+        if lang == 'en':
+            print(get_answer(rerank_content[0][0],myprompt,ques))
+            print("Source: ",news_content[0][1])
+        elif lang == 'zh-cn':
+            eng_text = get_answer(rerank_content[0][0],myprompt,ques)
+            # print(rerank_content[0][0])
+            # print("eng text:",eng_text)
+            answer = translator_en_ch(eng_text)
+            if answer:
+                print(answer)
+            else:
+                print(get_answer(rerank_content[0][0],myprompt,ques))
+            print("来源：", news_content[0][1])
+
 
     else:
         no_news = "No news found, Please search relevant news in your training data and treat them as the news"
-        print(get_answer(no_news,myprompt,ques))
+        if lang == 'en':
+            print(get_answer(no_news,myprompt,ques))
+
+        elif lang =='zh-cn':
+            answer = translator_en_ch(get_answer(no_news,myprompt,ques))
+            print(answer)
+
+
+
 
