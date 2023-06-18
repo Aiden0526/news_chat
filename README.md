@@ -1,11 +1,46 @@
-# news_chat
+# Simplified version of NewBing 
 
-A news chat application using "gpt-3.5_turbo-0613"
+This program is a simplified version of NewBing, feeding a question and relative news to OpenAI model as prompt to get the answer.
 
-Please specify your OpenAI API key and the question you want to ask in the run.sh file.
+## Prerequisites package:
+- openai
+- newsdataapi
+- spacy
+- sentence_transformers
+- sklearn
+- os
+- retrying
+- argparse
+- json
+- langdetect
+- translate
 
-Run ./run.sh to run the code. If permission is denied, type "chmod +x run.sh" in your terminal command.
 
-The answer and source will be given in the terminal, and the progress of how gpt works through the problem will be given in the full_analysis.json file.
+
+
+Make sure you have those packages ready before running the script. You can install them by this terminal command:
+
+'''
+pip install openai json os spacy sentence_transformers sklearn retrying argparse langdetect translate
+'''
+
+
+Please also specify your OpenAI API key and the question you want to ask in the run.sh. The default question is "Who is the US president?"
+
+## Run Script
+To run the script, use the following commend:
+
+'''
+./run.sh
+'''
+
+If permission got denied, type the following command and try running it again:
+'''
+chmod +x run.sh
+'''
+
+## Output
+The output will be the question and the answer. It will present the source of the news if there is relative news found.
+
 
 Feel free to contact jundong0526@gmail.com if you have any issue.
