@@ -21,7 +21,7 @@ This program is a simplified version of NewBing, feeding a question and relative
 Make sure you have those packages ready before running the script. You can install them by this terminal command:
 
 '''
-pip install openai json os spacy sentence_transformers sklearn retrying argparse langdetect googletrans
+pip install openai json os spacy sentence_transformers sklearn retrying argparse langdetect googletrans==4.0.0-rc1
 '''
 
 
