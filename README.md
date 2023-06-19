@@ -17,14 +17,12 @@ This program is a simplified version of NewBing, feeding a question and relative
 
 
 
-Make sure you have those packages ready before running the script. You can install them by this terminal command:
+Make sure you have those packages ready before running the script. You can install them in the requirements.txt by this terminal command:
 
 
-···
-
+```
 pip install openai json spacy sentence_transformers sklearn retrying argparse langdetect googletrans==4.0.0-rc1
-
-···
+```
 
 
 
@@ -34,22 +32,18 @@ Please also specify your OpenAI API key and the question you want to ask in the 
 To run the script, use the following commend:
 
 
-···
-
+```
 ./run.sh
-
-···
+```
 
 
 If permission got denied, type the following command and try running it again:
 
 
 
-···
-
+```
 chmod +x run.sh
-
-···
+```
 
 
 ## Output
