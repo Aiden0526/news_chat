@@ -21,7 +21,9 @@ Make sure you have those packages ready before running the script. You can insta
 
 
 ···
+
 pip install openai json spacy sentence_transformers sklearn retrying argparse langdetect googletrans==4.0.0-rc1
+
 ···
 
 
@@ -33,7 +35,9 @@ To run the script, use the following commend:
 
 
 ···
+
 ./run.sh
+
 ···
 
 
@@ -42,7 +46,9 @@ If permission got denied, type the following command and try running it again:
 
 
 ···
+
 chmod +x run.sh
+
 ···
 
 
