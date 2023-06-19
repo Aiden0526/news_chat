@@ -26,7 +26,7 @@ pip install openai json spacy sentence_transformers sklearn retrying argparse la
 
 
 ## Specify your OpenAI key and question before running!!!
-Please also specify your OpenAI API key and the question you want to ask in the run.sh. The default question is "Who is the US president?"
+Please also specify your OpenAI API key and the question you want to ask in the run.sh. The default question is "What could be the risk of AI?"
 
 ## Run Script
 To run the script, use the following commend:
