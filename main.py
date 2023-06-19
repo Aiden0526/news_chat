@@ -14,6 +14,8 @@ from langdetect import detect
 # from google.cloud import translate_v2 as translate
 # from translate import Translator
 from googletrans import Translator
+from multiprocessing import Pool
+import numpy as np
 
 
 @retry(stop_max_attempt_number=3,wait_fixed=2000)
@@ -49,25 +51,28 @@ def question_to_keyword(ques):
     # print("keyword: ",keywords)
     return keywords
 
+
+
 def similar_content_rank(ques,contents):
     model = SentenceTransformer('all-MiniLM-L6-v2')
     ques_embedding = model.encode([ques])
     # print(contents)
-    contents_embedding = model.encode(contents[0])
-
+    # contents_embedding = model.encode(contents[0])
+    # print(contents[0])
     if len(ques_embedding.shape)==1:
         ques_embedding = ques_embedding.reshape(1,-1)
 
-    if len(contents_embedding.shape)==1:
-        contents_embedding = contents_embedding.reshape(1,-1)
+    contents_embedding = [model.encode(content) for content in contents]
 
+    if len(contents_embedding[0].shape) == 1:
+        contents_embedding = [content.reshape(1, -1) for content in contents_embedding]
 
-    sim_score = cosine_similarity(ques_embedding,contents_embedding)
+    sim_score = [cosine_similarity(ques_embedding,content) for content in contents_embedding]
 
-    contents_score = zip(contents,sim_score[0])
+    contents_score = zip(contents,[score [0][0] for score in sim_score])
 
     ranked_content = sorted(contents_score,key=lambda x:x[1], reverse=True)
-
+    # print(ranked_content)
     return ranked_content
 
 
@@ -159,7 +164,10 @@ if __name__ == '__main__':
         keyword_lst = question_to_keyword(ques)
         # print(keyword_lst)
         news_content = get_news_content(keyword_lst)
-        # print(len(news_content[0]))
+        # print(len(news_content))
+        content_lst = []
+        for e in news_content:
+            content_lst.append(e[0])
 
         prompt_file = 'myprompt.txt'
         with open(prompt_file, 'r') as f:
@@ -167,9 +175,9 @@ if __name__ == '__main__':
 
 
         if news_content:
-            rerank_content = similar_content_rank(ques,news_content[0])
+            rerank_content = similar_content_rank(ques,content_lst)
             # print(rerank_content[0])
-
+            # print(rerank_content)
             if lang == 'en':
                 # print("english")
                 print("Question: ", ques)
