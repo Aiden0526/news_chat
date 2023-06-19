@@ -80,6 +80,7 @@ def get_answer(most_relative_news,myprompt,ques):
             model="gpt-3.5-turbo-0613",
             max_tokens=1000,
             messages=[
+                {"role":"system","content":"You are a helpful assistant that speaks like a professional news commentator"},
                 {"role":"user","content":combined_prompt}
             ]
         )
