@@ -17,7 +17,7 @@ This program is a simplified version of NewBing, feeding a question and relative
 
 
 
-Make sure you have those packages ready before running the script. You can install them in the requirements.txt by this terminal command:
+Make sure you have those packages ready before running the script. You can install them in the requirements.txt or by this terminal command:
 
 
 ```
