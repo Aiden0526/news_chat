@@ -12,7 +12,8 @@ import json
 
 from langdetect import detect
 # from google.cloud import translate_v2 as translate
-from translate import Translator
+# from translate import Translator
+from googletrans import Translator
 
 
 @retry(stop_max_attempt_number=3,wait_fixed=2000)
@@ -34,14 +35,18 @@ def get_news_content(keyword_lst):
     articles = response['results']
     contents = [(article['content'],article['source_id']) for article in articles]
 
+    # print(contents)
+
 
     return contents
 
 
 def question_to_keyword(ques):
+
     nlp = spacy.load("en_core_web_trf")
     text = nlp(ques)
     keywords = [chunk.text for chunk in text.noun_chunks]
+    # print("keyword: ",keywords)
     return keywords
 
 def similar_content_rank(ques,contents):
@@ -126,12 +131,12 @@ def detect_language(text):
     return lang
 
 def translator_en_ch(text):
-    translator = Translator(to_lang="zh")
+    translator = Translator()
     # print(text)
-    translation = translator.translate(text)
+    translation = translator.translate(text,src='en',dest='zh-cn')
     # print(translation)
 
-    return translation
+    return translation.text
 
 
 if __name__ == '__main__':
@@ -140,10 +145,15 @@ if __name__ == '__main__':
         openai.api_key = args.api_key
 
         ques = args.question
-        print("Question: ",ques)
+
 
         lang = detect_language(ques)
         # print(ques)
+        if lang == 'zh-cn':
+            translator = Translator()
+            translation = translator.translate(ques,src='zh-cn',dest='en')
+            # print(translation)
+            ques = translation.text
 
         keyword_lst = question_to_keyword(ques)
         # print(keyword_lst)
@@ -154,22 +164,25 @@ if __name__ == '__main__':
         with open(prompt_file, 'r') as f:
             myprompt = f.read()
 
-        print("Answer: ")
 
         if news_content:
             rerank_content = similar_content_rank(ques,news_content[0])
             # print(rerank_content[0])
 
             if lang == 'en':
-                print(get_answer(rerank_content[0][0],myprompt,ques))
+                # print("english")
+                print("Question: ", ques)
+                print("Answer: ",get_answer(rerank_content[0][0],myprompt,ques))
                 print("Source: ",news_content[0][1])
-            elif lang == 'zh-cn':
+            else:
+                # print("chinese")
+                print("问题: ", translator_en_ch(ques))
                 eng_text = get_answer(rerank_content[0][0],myprompt,ques)
                 # print(rerank_content[0][0])
                 # print("eng text:",eng_text)
                 answer = translator_en_ch(eng_text)
                 if answer:
-                    print(answer)
+                    print("答案: ",answer)
                 else:
                     print(get_answer(rerank_content[0][0],myprompt,ques))
                 print("来源：", news_content[0][1])
@@ -180,7 +193,7 @@ if __name__ == '__main__':
             if lang == 'en':
                 print(get_answer(no_news,myprompt,ques))
 
-            elif lang =='zh-cn':
+            else:
                 answer = translator_en_ch(get_answer(no_news,myprompt,ques))
                 print(answer)
     except Exception as e:

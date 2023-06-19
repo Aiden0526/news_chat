@@ -10,4 +10,4 @@
 
     - Step 5: Here is the clear instruction. You can output the fianl answer now. Remember, you do not need to show me what you do in each step. What you need to do is to give the answer with a few logic.
 
-    - Step 6: Make sure you only provide one answer finally. Don't include other things. Make sure you only provide information from step 4 and make sure it answer the question, don't include those from the previous steps, and say something like "i can't find any relavant information from my training data"
+    - Step 6: Make sure you only provide one answer finally. Don't include other things. Make sure you only provide information from step 4 and make sure it answer the question, don't include those from the previous steps. If you can't find any relative news in your training data, just answer the question as best as you can.
